@@ -38,10 +38,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/zustand/store-auth';
 
 export default function Dashboard() {
+  const hasAuth = useAuthStore((state) => state.hasAuth);
+  const logout = useAuthStore((state) => state.logout);
+
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div
+      className={cn('flex min-h-screen w-full flex-col', !hasAuth && 'hidden')}
+    >
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <a
@@ -156,7 +163,7 @@ export default function Dashboard() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
