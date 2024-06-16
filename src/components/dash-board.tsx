@@ -40,10 +40,12 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/zustand/store-auth';
+import { doSignOut } from '@/lib/firebase/auth';
+import { useUserStore } from '@/zustand/store-user';
 
 export default function Dashboard() {
   const hasAuth = useAuthStore((state) => state.hasAuth);
-  const logout = useAuthStore((state) => state.logout);
+  const userInfo = useUserStore((state) => state.userInfo);
 
   return (
     <div
@@ -158,12 +160,17 @@ export default function Dashboard() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                <div className="font-medium">{userInfo?.displayName}</div>
+                <div className="hidden text-sm text-muted-foreground md:inline">
+                  {userInfo?.email}
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={doSignOut}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

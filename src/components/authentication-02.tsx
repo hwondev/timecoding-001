@@ -8,12 +8,28 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { doSignInWithGoogle } from '@/lib/firebase/auth';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/zustand/store-auth';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 export default function LoginForm() {
+  const [isProccesing, setIsProccesing] = useState(false);
+
   const hasAuth = useAuthStore((state) => state.hasAuth);
-  const login = useAuthStore((state) => state.login);
+  // const login = useAuthStore((state) => state.login);
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      setIsProccesing(true);
+      await doSignInWithGoogle();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsProccesing(false);
+    }
+  };
 
   return (
     <div className={cn('p-4 md:pt-4', hasAuth && 'hidden')}>
@@ -44,10 +60,18 @@ export default function LoginForm() {
               </div>
               <Input id="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full" onClick={login}>
+            <Button type="submit" className="w-full">
               Login
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleSignInWithGoogle}
+              disabled={isProccesing}
+            >
+              {isProccesing && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Login with Google
             </Button>
           </div>
